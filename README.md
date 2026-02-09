@@ -1,16 +1,12 @@
 # pencatat_uang
 
-A new Flutter project.
+This is simple Flutter application used to track daily income and expenses. This project was created as a learning exercise and portfolio to understand the basics of Flutter application development.
 
-## Getting Started
+## Features
+- Add expenses records
+- View transaction history
+- Monthly expenditure analysis chart
 
-This project is a starting point for a Flutter application.
+## Notes
+This project is still under development and can be extended with features such as local database storage or state management solutions.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
