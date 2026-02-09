@@ -8,5 +8,7 @@ This is simple Flutter application used to track daily expenses. This project wa
 - Monthly expenditure analysis chart
 
 ## Notes
-This project is still under development and can be extended with features such as local database storage or state management solutions.
+This project is still under development and can be extended with features such as local database storage or state management solutions, so some element may use dummy data for giving a initial overview.
+
+
 
