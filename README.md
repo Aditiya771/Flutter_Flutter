@@ -1,6 +1,6 @@
 # pencatat_uang
 
-This is simple Flutter application used to track daily income and expenses. This project was created as a learning exercise and portfolio to understand the basics of Flutter application development.
+This is simple Flutter application used to track daily expenses. This project was created as a learning exercise and portfolio to understand the basics of Flutter application development.
 
 ## Features
 - Add expenses records
