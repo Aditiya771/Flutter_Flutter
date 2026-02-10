@@ -12,14 +12,6 @@ class PopUpAction extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return PopupMenuButton<String>(
-      onSelected: (value) {
-        if(value == 'Buat Data Palsu'){
-          SpendlogStorage.generateDummyData();
-        }
-        else if (value == 'Bersihkan History'){
-          SpendlogStorage.hapusJawir();
-        }
-      },
       itemBuilder: (BuildContext context) {
         return actionList.map((String value) {
           return PopupMenuItem<String>(
