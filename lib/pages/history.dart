@@ -255,8 +255,8 @@ class _HistoryPageState extends State<HistoryPage>{
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: const Color.fromARGB(255, 147, 205, 253),),
       margin: EdgeInsets.symmetric(horizontal: 5),
       child: Column(children: [
-        SizedBox(
-          height: 7),
+        
+        SizedBox(height: 7),
 
         GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -290,6 +290,6 @@ class _HistoryPageState extends State<HistoryPage>{
 
       ])
     ));
-  }
+  } 
 }
 

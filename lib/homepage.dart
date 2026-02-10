@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pencatat_uang/pages/calculatorpanel.dart';
 import 'pages/analysis.dart';
 import 'pages/history.dart';
+import 'package:pencatat_uang/actionbutton_folder/actionpopup.dart';
 
 final List<Tab> myTab = [
   Tab(icon: Icon(Icons.calculate), text: "Kalkulator"),
@@ -19,9 +20,10 @@ class HomePage extends StatelessWidget {
       length: myTab.length, 
       child: Scaffold(
         appBar: AppBar(
-          title: Text("SpendLog",
-            style: TextStyle(fontSize: 25, color: Colors.white)),        
           backgroundColor: Colors.blue,
+          title: Text("SpendLog",
+            style: TextStyle(fontSize: 25, color: Colors.white)),
+          actions: [PopUpAction()]   
         ),
 
         body: TabBarView(
