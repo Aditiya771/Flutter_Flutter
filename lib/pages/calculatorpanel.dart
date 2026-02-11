@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:pencatat_uang/data/spendlog_storage.dart';
 import 'savepopupsheet.dart';
 
 List<List<String>> callculateGrid = [
@@ -64,11 +63,7 @@ class CalculatorPanelState extends State<CalculatorPanel>{
   }
 
   void clearAll(){
-    firstNum = '';
-    secondNum = '';
-    operator = null;
     display = '';
-    firstVar = false;
   }
 
   String removeZero(String result){
@@ -145,8 +140,7 @@ class CalculatorPanelState extends State<CalculatorPanel>{
     //SPESIAL TOMBOL
     else if(specialSymbol.contains(value)){
       if(value == 'C'){
-        clearAll();
-        SpendlogStorage.hapusJawir();}
+        clearAll();}
 
       else if(value == '⌫'){
         if(display.isNotEmpty){
@@ -166,7 +160,7 @@ class CalculatorPanelState extends State<CalculatorPanel>{
             showPopUpSave(display);}}
       }
       else if(value == '//'){
-        SpendlogStorage.generateDummyData();
+        debugPrint('Dummy Button');
       }
     }
 

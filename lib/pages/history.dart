@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pencatat_uang/data/spendlog_storage.dart';
+import 'package:pencatat_uang/data/repository.dart';
 import 'package:intl/intl.dart';
 
 final formatId = NumberFormat.decimalPattern('id_ID');
@@ -32,7 +32,7 @@ class _HistoryPageState extends State<HistoryPage>{
     String numberMonth = month.split('-')[1];
     String year = month.split('-')[0];
     if(numberMonth[0] == '0'){numberMonth = numberMonth.substring(1);}
-    List<String> monthNameTemp = ['xixixi','Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    List<String> monthNameTemp = ['hehehe :)','Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober','November','Desember'];
     String nameMonth = monthNameTemp[int.parse(numberMonth)];
     return '${nameMonth} $year';
   }
@@ -63,14 +63,12 @@ class _HistoryPageState extends State<HistoryPage>{
       if(currentIdex > 0){
         selectedMonth = month[currentIdex-1];
         date = (realDataTransaction[selectedMonth!] as Map<String,dynamic>).keys.toList();       
-        selectedDate = date.last;
-      }
+        selectedDate = date.last;}
       else{
-         ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(
+        ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(
           const SnackBar(content:
           Text('Ini Adalah Bulan Terlama.'),
-          duration: Duration(seconds: 2),)
-        );
+          duration: Duration(seconds: 2),));
       }
     }
   }
@@ -80,19 +78,16 @@ class _HistoryPageState extends State<HistoryPage>{
 
     if(direction == MoveDirection.forward){
       if(currentIndex < date.length - 1){
-        selectedDate = date[currentIndex + 1];
-      }
+        selectedDate = date[currentIndex + 1];}
       else{
-        moveMonth(MoveDirection.forward, FromDate.past);
-      }
+        moveMonth(MoveDirection.forward, FromDate.past);}
     }
+
     else{
       if(currentIndex > 0){
-        selectedDate = date[currentIndex - 1];
-      }
+        selectedDate = date[currentIndex - 1];}
       else{
-        moveMonth(MoveDirection.backward, FromDate.future);
-      }
+        moveMonth(MoveDirection.backward, FromDate.future);}
     }
   }
   
@@ -105,7 +100,7 @@ class _HistoryPageState extends State<HistoryPage>{
   @override
   void initState(){
     super.initState();
-    _futureTransaction = SpendlogStorage.loadTransaction();
+    _futureTransaction = Repository.memoryData();
   }
 
 
@@ -213,7 +208,6 @@ class _HistoryPageState extends State<HistoryPage>{
                 },
               ),
             )
-
           ]
         );
       }

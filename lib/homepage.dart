@@ -3,6 +3,7 @@ import 'package:pencatat_uang/pages/calculatorpanel.dart';
 import 'pages/analysis.dart';
 import 'pages/history.dart';
 import 'package:pencatat_uang/actionbutton_folder/actionpopup.dart';
+import 'package:pencatat_uang/data/repository.dart';
 
 final List<Tab> myTab = [
   Tab(icon: Icon(Icons.calculate), text: "Kalkulator"),
@@ -12,6 +13,9 @@ final List<Tab> myTab = [
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
+  static final repository = Repository();
+  static final history = HistoryPage();
 
   @override
   Widget build(BuildContext context){
