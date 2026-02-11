@@ -82,12 +82,17 @@ class SpendlogStorage {
     return jsonDecode(content) as Map<String,dynamic>;  
   }
 
+
+//---------------------------------------------------------------------
+  //BERSIHKAN SEMUA DATA
   static Future<void> hapusJawir() async{
     final fileTransaction = await getFile();
 
     if(await fileTransaction.exists()){
       await fileTransaction.writeAsString(jsonEncode({}));
     }
+
+    await Repository.loadFromZero();
   }
 
 //----------------------------------------------------------------
@@ -313,14 +318,9 @@ static Future<void> generateDummyData() async{
   }
 };
 
-
-
-
-
   final fileTransaction = await getFile();
-
-
   await fileTransaction.writeAsString(jsonEncode(dummyData));
+  await Repository.loadFromZero();
 
   }
 }
