@@ -15,6 +15,7 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   static final repository = Repository();
+  static final allData = Repository.loadFromZero();
   static final history = HistoryPage();
 
   @override

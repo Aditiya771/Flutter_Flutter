@@ -53,7 +53,7 @@ class SpendlogStorage {
     templateJSON(data, month, day, transactionMap);
 
     await fileTransaction.writeAsString(jsonEncode(data));
-    Repository.loadFromZero();
+    await Repository.loadFromZero();
   }
 
   static void templateJSON(

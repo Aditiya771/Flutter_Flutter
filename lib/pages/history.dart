@@ -100,7 +100,7 @@ class _HistoryPageState extends State<HistoryPage>{
   @override
   void initState(){
     super.initState();
-    _futureTransaction = Repository.memoryData();
+    _futureTransaction = Repository.loadMemoryData();
   }
 
 
