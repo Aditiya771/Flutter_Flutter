@@ -1,9 +1,20 @@
 import 'spendlog_storage.dart';
 
 class Repository {
-  static Future<Map<String, dynamic>> memoryData() async{
-    Future<Map<String, dynamic>> allDataTransaction = SpendlogStorage.loadTransaction();
 
-    return allDataTransaction;
+  static Map<String, dynamic>? allDataTransaction;
+  
+  static Future<Map<String, dynamic>> memoryData() async{
+    if(allDataTransaction != null){
+      return allDataTransaction!;
+    }
+    else{
+      return loadFromZero();
+    }
+  }
+
+  static Future<Map<String, dynamic>> loadFromZero() async{
+    allDataTransaction = await SpendlogStorage.loadTransaction();
+    return allDataTransaction!;
   }
 }

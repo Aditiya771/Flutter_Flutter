@@ -1,6 +1,7 @@
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
+import 'repository.dart';
 
 class Transaction {
   final int amount;
@@ -52,6 +53,7 @@ class SpendlogStorage {
     templateJSON(data, month, day, transactionMap);
 
     await fileTransaction.writeAsString(jsonEncode(data));
+    Repository.loadFromZero();
   }
 
   static void templateJSON(

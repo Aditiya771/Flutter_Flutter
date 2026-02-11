@@ -34,8 +34,9 @@ class HomePage extends StatelessWidget {
           children: [
             SafeArea(child:  const CalculatorPanel()),
             SafeArea(child:  const HistoryPage()),
-            SafeArea(child:  const AnalysisPage())]
-          ),
+            SafeArea(child:  const AnalysisPage())
+          ]
+        ),
         
         bottomNavigationBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
