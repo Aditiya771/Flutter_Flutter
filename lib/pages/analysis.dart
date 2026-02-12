@@ -1,33 +1,16 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'anaysis_controller.dart';
 
+
+final formatNumberID = NumberFormat.decimalPattern("id_ID");
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({super.key});
 
   @override
   State<AnalysisPage> createState() => AnalysisPageState();
 }
-
-final formatNumberID = NumberFormat.decimalPattern('id_ID');
-
-  List<double> dummyDataPengeluaran = [
-    20.0, 12.0, 15.0, 18.0, 20.0,
-    22.0, 25.0, 30.0, 50.0, 32.0,
-    35.0, 38.0, 40.0, 42.0, 45.0,
-    47.0, 50.0, 25.0, 81.0, 17.0,
-    19.0, 95.0, 24.0, 50.0, 29.0,
-    33.0, 36.0, 20.0, 44.0, 48.0,
-  ];
-
-  double maxY = dummyDataPengeluaran.reduce((a,b) => a > b ? a : b);
-  double minY = dummyDataPengeluaran.reduce((a,b) => a < b ? a : b);
-
-  List<FlSpot> titikGrafik = dummyDataPengeluaran.asMap().entries.map((entry) {
-    return FlSpot(
-      entry.key.toDouble(),
-      entry.value,);
-  }).toList();
 
   final List<Map<String, dynamic>> dummyKategory = [
   {'label': 'Makan', 'value': 400000.0, 'color': Colors.blue},
@@ -67,6 +50,8 @@ final formatNumberID = NumberFormat.decimalPattern('id_ID');
 
 
 class AnalysisPageState extends State<AnalysisPage> {
+  final controller = AnalysisController();
+
   @override
   Widget build(BuildContext context){
     return Container(
@@ -189,9 +174,9 @@ class AnalysisPageState extends State<AnalysisPage> {
                     LineChart( //CHART PROYEKSI
                       LineChartData(
                         minX: 0,
-                        maxX: (titikGrafik.length).toDouble() - 1,
+                        maxX: controller.getMaxX,
                         minY: 0,
-                        maxY: maxYController(maxY + (maxY * 0.2)),
+                        maxY: controller.getMaxY,
                         gridData: FlGridData(show: false),
                         borderData: FlBorderData(
                           show: true,
@@ -238,7 +223,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                           )),
                         lineBarsData: [
                           LineChartBarData(
-                            spots: titikGrafik,
+                            spots: controller.getLineChartSpots,
                             isCurved: true, 
                             barWidth: 1.5,
                             dotData: FlDotData(show: false,)
@@ -277,7 +262,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                     height: 100,
                     child: PieChart(
                       PieChartData(
-                        sections: pieSections,
+                        sections: controller.getPieSections,
                         sectionsSpace: 0,
                         centerSpaceRadius: 10                   
                       )

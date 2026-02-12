@@ -5,13 +5,10 @@ class Repository {
   static Map<String, dynamic>? allDataTransaction;
 
 
-  static List<String> get allMonth {
-    return allDataTransaction?.keys.toList() ?? [];
-  }
-
+  static List<String> allMonth = [];
   static String? selectedMonth;
-  static List<List<String>>? trasactionByDate;
-  
+  static Map<String, double>? trasactionByDate;
+
 
   static Future<Map<String, dynamic>> loadMemoryData() async{
     if(allDataTransaction != null){
@@ -26,4 +23,8 @@ class Repository {
     allDataTransaction = await SpendlogStorage.loadTransaction();
     return allDataTransaction!;
   }
+
+  
+
+  
 }

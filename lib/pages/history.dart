@@ -214,7 +214,7 @@ class _HistoryPageState extends State<HistoryPage>{
     );
   }
 
-  Widget calenderRow(){//
+  Widget calenderRow(){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
