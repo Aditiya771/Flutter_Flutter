@@ -21,20 +21,6 @@ class AnalysisPage extends StatefulWidget {
 
   final sortedCategory = [...dummyKategory]
     ..sort((a,b) => (b['value'] as double).compareTo(a['value'] as double));
- 
-  List<PieChartSectionData> pieSections = dummyKategory.map((item) {
-    return PieChartSectionData(
-      value: item['value'],
-      color: item['color'],
-      title: item['label'],
-      radius: 40,
-      titleStyle: const TextStyle(
-        fontSize: 8.5,
-        color: Colors.black,
-        fontWeight: FontWeight.bold
-      )
-    );
-  },).toList();
 
   double maxYController(double maxY){
     double maxYwutwut = 0;
@@ -44,7 +30,6 @@ class AnalysisPage extends StatefulWidget {
     else{
       maxYwutwut = maxY;
     }
-    //FOR THE LS
     return maxYwutwut;
   }
 
@@ -212,7 +197,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                                 alignment: Alignment.centerRight,
                                 child: Padding(padding: EdgeInsetsGeometry.only(right: 2), child: 
                                   Text(
-                                  '${value.toInt()}K',
+                                  '${(value/1000).toInt()}K',
                                   maxLines: 1,
                                   style: const TextStyle(fontSize: 8),
                                   )

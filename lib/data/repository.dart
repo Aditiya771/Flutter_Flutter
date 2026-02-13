@@ -4,12 +4,6 @@ class Repository {
 
   static Map<String, dynamic>? allDataTransaction;
 
-
-  static List<String> allMonth = [];
-  static String? selectedMonth;
-  static Map<String, double>? trasactionByDate;
-
-
   static Future<Map<String, dynamic>> loadMemoryData() async{
     if(allDataTransaction != null){
       return allDataTransaction!;

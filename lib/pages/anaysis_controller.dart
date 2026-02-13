@@ -1,3 +1,6 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pencatat_uang/data/repository.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -6,7 +9,7 @@ class AnalysisController {
 
   List<String> get allMonth => allDataTransaction.keys.toList()..sort();
 
-  String? get selectedMonth => allMonth.isNotEmpty ? allMonth.last : null;
+  String? get selectedMonth => allMonth.isNotEmpty ? allMonth.first : null;
 
   Map<String, dynamic> get monthNow => selectedMonth != null ? allDataTransaction[selectedMonth] ?? {} : {};
 
@@ -15,7 +18,15 @@ class AnalysisController {
   double? average;
   List<MapEntry<String,int>> highestDate = [];
   Map<String,int>? totalByCategory;
-  
+
+  final List<Color> categoryColor = [
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.amberAccent,
+    Colors.grey
+  ];
+
 
   Map<String, int> get getTotalSpendByDate {
     if (totalSpendByDate != null) return totalSpendByDate!;
@@ -30,6 +41,7 @@ class AnalysisController {
       result[date] = totalByDate;
     });
     totalSpendByDate = result;
+    debugPrint('totalspendbydate $result');
     return result;
   }
 
@@ -38,6 +50,7 @@ class AnalysisController {
     int result = 0;
     getTotalSpendByDate.forEach((key, value){result += value;});
     totalSpendAllMonth = result;
+    debugPrint('gettotalspendallmo $result');
     return totalSpendAllMonth!;
   }
 
@@ -79,27 +92,27 @@ class AnalysisController {
     return List.generate(sortedEntries.length, (index) {
       final entry = sortedEntries[index];
       final day = DateTime.parse(entry.key).day.toDouble();
-      return FlSpot(
-        day,
-        entry.value.toDouble(),
-      );
+      return FlSpot(day,entry.value.toDouble());
     });
   }
 
   List<PieChartSectionData> get getPieSections {
-    final data = getTotalByCategory;
+    final data = getTotalByCategory.entries.toList();
+    data.sort((a,b) => b.value.compareTo(a.value));
 
-    return data.entries.map((entry) {
+    return List.generate(data.length, (index){
+      final item = data[index];
       return PieChartSectionData(
-        value: entry.value.toDouble(),
-        title: entry.key,
-        radius: 60,
+        value: item.value.toDouble(),
+        title: item.key,
+        titleStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+        color: categoryColor[index],
       );
-    }).toList();
+    });
   }
 
   double get getMaxX {
-    if (selectedMonth == null) return 31;
+    if (selectedMonth == null) return 0;
 
     final date = DateTime.parse("${selectedMonth!}-01");
     final lastDay = DateTime(date.year, date.month + 1, 0).day;
