@@ -118,7 +118,7 @@ class _HistoryPageState extends State<HistoryPage>{
 
         if(process.hasError){
           return Center(
-           child: Text('Terjadi kesalahan dalam pemprosesan data, silahkan mulai ulang :)'));
+           child: Text('Terjadi kesalahan dalam pemprosesan data, silahkan mulai ulang :)', style: TextStyle(fontSize: 18),));
         }
 
         final dataTransaction = process.data!;

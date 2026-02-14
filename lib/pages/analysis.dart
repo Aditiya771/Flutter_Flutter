@@ -12,28 +12,6 @@ class AnalysisPage extends StatefulWidget {
   State<AnalysisPage> createState() => AnalysisPageState();
 }
 
-  final List<Map<String, dynamic>> dummyKategory = [
-  {'label': 'Makan', 'value': 400000.0, 'color': Colors.blue},
-  {'label': 'Transport', 'value': 200000.0, 'color': Colors.green},
-  {'label': 'Hiburan', 'value': 400000.0, 'color': Colors.orange},
-  {'label': 'Tagihan', 'value':150000.0, 'color': Colors.amberAccent}
-  ];
-
-  final sortedCategory = [...dummyKategory]
-    ..sort((a,b) => (b['value'] as double).compareTo(a['value'] as double));
-
-  double maxYController(double maxY){
-    double maxYwutwut = 0;
-    if(maxY % 10 !=0){
-      maxYwutwut = (maxY - (maxY % 10)) + 10; 
-    }
-    else{
-      maxYwutwut = maxY;
-    }
-    return maxYwutwut;
-  }
-
-
 class AnalysisPageState extends State<AnalysisPage> {
   final controller = AnalysisController();
 
@@ -43,8 +21,12 @@ class AnalysisPageState extends State<AnalysisPage> {
       height: double.infinity,
       width: double.infinity,
       color: const Color.fromARGB(255, 213, 236, 247),
-      child: Column(children: [
-
+      child: controller.hasData ?
+        hasDataFalse():hasDataTrue());
+  }
+      
+  Widget hasDataTrue(){
+    return Column(children: [
 
         //HEADE HALAMAN
         Text('Ringkasan Analisis Pengeluaran Bulan', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 3, 30, 67), fontWeight: FontWeight.bold)),
@@ -52,19 +34,34 @@ class AnalysisPageState extends State<AnalysisPage> {
     
         //ELEMEN PERTAMA
         Container(
-          margin: EdgeInsets.all(7),
-          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          margin: EdgeInsets.all(5),
+          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
           decoration: BoxDecoration(color: const Color.fromARGB(255, 255, 255, 255), borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.accessibility_new_rounded),
-                  Text('Januari 2026', style: TextStyle(fontSize: 15)),
-                  Icon(Icons.accessibility_new_rounded),
+                  IconButton(
+                    onPressed: (){
+                      setState(() {
+                        controller.moveMonth(MoveDirection.backward);
+                      });
+                    },
+                    icon: Icon(Icons.keyboard_arrow_left_outlined),
+                    iconSize: 20,),
+                  Text(controller.getMonth(controller.getSelectedMonth!), style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        controller.moveMonth(MoveDirection.forward);
+                      });
+                    },
+                    icon: Icon(Icons.keyboard_arrow_right_outlined),
+                    iconSize: 20),
                 ],),
-              SizedBox(height: 3,),
+
+              
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,11 +80,11 @@ class AnalysisPageState extends State<AnalysisPage> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [  
-                            Icon(Icons.account_balance_wallet_sharp, size: 30,color: Color.fromARGB(255, 3, 30, 67),), 
-                            Text('Semua\nPengeluaran',style: const TextStyle(fontSize: 10, color: Color.fromARGB(255, 3, 30, 67), fontWeight: FontWeight.bold))]),
+                              Icon(Icons.account_balance_wallet_sharp, size: 30,color: Color.fromARGB(255, 3, 30, 67),), 
+                              Text('Semua\nPengeluaran',style: const TextStyle(fontSize: 10, color: Color.fromARGB(255, 3, 30, 67), fontWeight: FontWeight.bold))]),
                           SizedBox(height: 4,),
                           Text('Total:', style: const TextStyle(fontSize: 10,color: Color.fromARGB(255, 3, 30, 67)),),
-                          Text('Rp. 1,200,000',style: const TextStyle(fontSize: 12,color: Color.fromARGB(255, 3, 30, 67),fontWeight: FontWeight.bold),)
+                          Text('Rp. ${formatNumberID.format(controller.getTotalSpendAllMonth)}',style: const TextStyle(fontSize: 12,color: Color.fromARGB(255, 3, 30, 67),fontWeight: FontWeight.bold),)
                       ])
                   ),
 
@@ -107,7 +104,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                             Text('Rata-rata\nPengeluaran',style: const TextStyle(fontSize: 10,fontWeight: FontWeight.bold))]),
                           SizedBox(height: 4),
                           Text('Perhari:',style: const TextStyle(fontSize: 10,color: Color.fromARGB(255, 3, 30, 67)),),
-                          Text('Rp. 1,200,000',style: const TextStyle(fontSize: 12,color: Color.fromARGB(255, 3, 30, 67),fontWeight: FontWeight.bold),)
+                          Text('Rp. ${formatNumberID.format(controller.getAverage)}',style: const TextStyle(fontSize: 12,color: Color.fromARGB(255, 3, 30, 67),fontWeight: FontWeight.bold),)
                       ],)
                   ),
 
@@ -125,7 +122,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                             children: [
                               Icon(Icons.local_grocery_store_outlined, size: 30,color: Color.fromARGB(255, 3, 30, 67)), 
                               Text('Hari Paling\nBoros/Hemat',style: const TextStyle(fontSize: 10,color: Color.fromARGB(255, 3, 30, 67),fontWeight: FontWeight.bold))
-                              ]),
+                            ]),
                           SizedBox(height: 4,),
                           Text('Tanggal:', style: const TextStyle(fontSize: 10,color: Color.fromARGB(255, 3, 30, 67)),),
                           Text('19/02', style: const TextStyle(fontSize: 12,color: Color.fromARGB(255, 3, 30, 67),fontWeight: FontWeight.bold),)]
@@ -248,8 +245,8 @@ class AnalysisPageState extends State<AnalysisPage> {
                     child: PieChart(
                       PieChartData(
                         sections: controller.getPieSections,
-                        sectionsSpace: 0,
-                        centerSpaceRadius: 10                   
+                        sectionsSpace: 3,
+                        centerSpaceRadius: 15                
                       )
                     ),
                   )
@@ -269,10 +266,9 @@ class AnalysisPageState extends State<AnalysisPage> {
                   SizedBox(height: 10,),
                   Expanded(child:
                     ListView.builder(
-                      itemCount: sortedCategory.length,
+                      itemCount: controller.getLitViewSection.length,
                       itemBuilder: (context, index){
-                        final item = sortedCategory[index];
-
+                        final item = controller.getLitViewSection[index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 0),
                           child: Center(child: Padding(padding: const EdgeInsetsGeometry.only(left: 5),
@@ -283,15 +279,15 @@ class AnalysisPageState extends State<AnalysisPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                    width: 25,
-                                    height: 25,
+                                    width: 27,
+                                    height: 27,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: item['color'],
+                                      color: controller.categoryColor[index],
                                       borderRadius: BorderRadius.circular(6),
                                     ),
-                                    child: const Text(
-                                      '10%',
+                                    child: Text(
+                                      '${controller.getPersentage(item['value']).toStringAsFixed(0)}%',
                                       style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -299,9 +295,11 @@ class AnalysisPageState extends State<AnalysisPage> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 3), 
+
+                                  const SizedBox(width: 3),
+
                                   Container(
-                                    height: 25,
+                                    height: 27,
                                     width: 128,
                                     padding: const EdgeInsets.symmetric(horizontal: 8),
                                     alignment: Alignment.centerLeft,
@@ -310,7 +308,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Text(
-                                      '${item['label']}:Rp.${formatNumberID.format(item['value'].toInt())}',
+                                      '${item['category']}:Rp.${formatNumberID.format(item['value'].toInt())}',
                                       style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -327,8 +325,15 @@ class AnalysisPageState extends State<AnalysisPage> {
               ),
             )
         ],)
-      ])
+      ]
+    ); 
+  }
+
+  Widget hasDataFalse(){
+    return Center(
+      child: Text('Datanya Masih Kosong :)', style: TextStyle(fontSize: 18),)
     );
   }
+
 }
 

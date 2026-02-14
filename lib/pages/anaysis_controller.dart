@@ -1,17 +1,23 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:pencatat_uang/data/repository.dart';
 import 'package:fl_chart/fl_chart.dart';
 
+enum MoveDirection {forward, backward}
+
 class AnalysisController {
   static Map<String, dynamic> get allDataTransaction => Repository.allDataTransaction ?? {};
-
+  bool get hasData => Repository.allDataTransaction?.isEmpty ?? false;
   List<String> get allMonth => allDataTransaction.keys.toList()..sort();
+  String? selectedMonth;
+  
+  String? get getSelectedMonth {
+    if (selectedMonth == null && allMonth.isNotEmpty) {
+      selectedMonth = allMonth.last;
+    }
+    return selectedMonth;
+  }
 
-  String? get selectedMonth => allMonth.isNotEmpty ? allMonth.first : null;
-
-  Map<String, dynamic> get monthNow => selectedMonth != null ? allDataTransaction[selectedMonth] ?? {} : {};
+  Map<String, dynamic> get monthNow => getSelectedMonth != null ? allDataTransaction[getSelectedMonth] ?? {} : {};
 
   Map<String, int>? totalSpendByDate;
   int? totalSpendAllMonth;
@@ -19,17 +25,27 @@ class AnalysisController {
   List<MapEntry<String,int>> highestDate = [];
   Map<String,int>? totalByCategory;
 
-  final List<Color> categoryColor = [
-    Colors.blue,
-    Colors.green,
-    Colors.orange,
-    Colors.amberAccent,
-    Colors.grey
-  ];
+  void resetController(){
+    selectedMonth = null;
+    totalSpendByDate = null;
+    totalSpendAllMonth = null;
+    average = null;
+    totalByCategory = null;
+  }
+
+
+  String getMonth(String? month){
+    if(month == null) {return 'Kamu Belum Punya Catatan :)';}
+    String numberMonth = month.split('-')[1];
+    String year = month.split('-')[0];
+    if(numberMonth[0] == '0'){numberMonth = numberMonth.substring(1);}
+    List<String> monthNameTemp = ['WiwokDetok','Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    String nameMonth = monthNameTemp[int.parse(numberMonth)];
+    return '${nameMonth} $year';
+  }
 
 
   Map<String, int> get getTotalSpendByDate {
-    if (totalSpendByDate != null) return totalSpendByDate!;
     final result = <String, int>{};
     monthNow.forEach((date, transactions) {
       int totalByDate = 0;
@@ -46,16 +62,15 @@ class AnalysisController {
   }
 
   int get getTotalSpendAllMonth {
-    if(totalSpendAllMonth != null) return totalSpendAllMonth!;
+  
     int result = 0;
     getTotalSpendByDate.forEach((key, value){result += value;});
     totalSpendAllMonth = result;
-    debugPrint('gettotalspendallmo $result');
     return totalSpendAllMonth!;
   }
 
   double get getAverage{
-    if(average != null)return average!;
+  
     average = getTotalSpendAllMonth / getTotalSpendByDate.length;
     return average!;
   }
@@ -69,7 +84,7 @@ class AnalysisController {
   }
 
   Map<String,int> get getTotalByCategory {
-    if(totalByCategory != null) return totalByCategory!;
+ 
     final result = <String, int>{};
     monthNow.forEach((date, transaction){
       if(transaction is List){
@@ -96,6 +111,31 @@ class AnalysisController {
     });
   }
 
+  double get getMaxX {
+    if (getSelectedMonth == null) return 0;
+    final date = DateTime.parse("${getSelectedMonth!}-01");
+    final lastDay = DateTime(date.year, date.month + 1, 0).day;
+    return lastDay.toDouble();
+  }
+
+  double get getMaxY {
+    final spots = getLineChartSpots;
+    if (spots.isEmpty) return 0;
+    final maxY = spots.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+    return maxY * 1.2;
+  }
+
+//------------------------------------------------------------------------
+  //PIECHART & CATEGORY
+  final List<Color> categoryColor = [
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.amberAccent,
+    const Color.fromARGB(255, 255, 112, 112),
+    Colors.grey
+  ];
+
   List<PieChartSectionData> get getPieSections {
     final data = getTotalByCategory.entries.toList();
     data.sort((a,b) => b.value.compareTo(a.value));
@@ -103,32 +143,46 @@ class AnalysisController {
     return List.generate(data.length, (index){
       final item = data[index];
       return PieChartSectionData(
-        value: item.value.toDouble(),
+        value: item.value.toDouble(),    
         title: item.key,
-        titleStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+        titleStyle: const TextStyle(fontSize: 7, fontWeight: FontWeight.bold),
         color: categoryColor[index],
+        showTitle: false,
+        radius: 40
       );
     });
   }
 
-  double get getMaxX {
-    if (selectedMonth == null) return 0;
-
-    final date = DateTime.parse("${selectedMonth!}-01");
-    final lastDay = DateTime(date.year, date.month + 1, 0).day;
-
-    return lastDay.toDouble();
+  double getPersentage(int value){
+    double persentage = (value / getTotalSpendAllMonth) * 100;
+    return persentage;
   }
 
-  double get getMaxY {
-    final spots = getLineChartSpots;
-    if (spots.isEmpty) return 0;
+  List<Map<String,dynamic>> get getLitViewSection{
+    final data = getTotalByCategory.entries.toList()
+      ..sort((a,b) => b.value.compareTo(a.value));
+      
 
-    final maxY = spots
-        .map((e) => e.y)
-        .reduce((a, b) => a > b ? a : b);
+    return data.map((e) {
+      return {
+        'category' : e.key,
+        'value' : e.value,
+      };
+    }).toList();
+  }
 
-    return maxY * 1.2;
+  void moveMonth(MoveDirection direction){
+    int currentIndex = allMonth.indexOf(getSelectedMonth!);
+    if(direction == MoveDirection.forward){
+      if(currentIndex <  allMonth.length - 1){
+        selectedMonth = allMonth[currentIndex+1];
+      }
+    }     
+    else{
+      if(currentIndex > 0){
+        selectedMonth = allMonth[currentIndex -1];
+      }
+    }
   }
 
 }
