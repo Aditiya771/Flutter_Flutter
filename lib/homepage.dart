@@ -8,7 +8,7 @@ import 'package:pencatat_uang/data/repository.dart';
 final List<Tab> myTab = [
   Tab(icon: Icon(Icons.calculate), text: "Kalkulator"),
   Tab(icon: Icon(Icons.calendar_month), text: "Catatan",),
-  Tab(icon: Icon(Icons.insert_chart_outlined_outlined), text: "Analisis",)
+  Tab(icon: Icon(Icons.insert_chart_outlined_outlined), text: "Analisa",)
 ];
 
 class HomePage extends StatelessWidget {

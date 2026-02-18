@@ -133,7 +133,10 @@ class AnalysisController {
     Colors.orange,
     Colors.amberAccent,
     const Color.fromARGB(255, 255, 112, 112),
-    Colors.grey
+    const Color.fromARGB(255, 233, 212, 137),
+    Colors.cyanAccent,
+    Colors.grey,
+    Colors.pinkAccent
   ];
 
   List<PieChartSectionData> get getPieSections {

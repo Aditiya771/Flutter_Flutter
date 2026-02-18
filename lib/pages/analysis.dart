@@ -50,7 +50,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                     },
                     icon: Icon(Icons.keyboard_arrow_left_outlined),
                     iconSize: 20,),
-                  Text(controller.getMonth(controller.getSelectedMonth!), style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                  Text(controller.getMonth(controller.getSelectedMonth!), style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
                   IconButton(
                     onPressed: () {
                       setState(() {

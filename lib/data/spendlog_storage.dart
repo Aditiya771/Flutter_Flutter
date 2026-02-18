@@ -313,6 +313,18 @@ static Future<void> generateDummyData() async{
         "value": 75000,
         "note": "Internet",
         "category": "Tagihan"
+      },
+      {
+        "time": "21:45",
+        "value": 75000,
+        "note": "Beli Buku",
+        "category": "Pendidikan"
+      },
+      {
+        "time": "21:45",
+        "value": 75000,
+        "note": "Beli nasi padang buat nyogok orang demo",
+        "category": "Politik"
       }
     ]
   }
