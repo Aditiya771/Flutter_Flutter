@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'anaysis_controller.dart';
+import '../controller/anaysis_controller.dart';
 
 
 final formatNumberID = NumberFormat.decimalPattern("id_ID");
@@ -330,10 +330,13 @@ class AnalysisPageState extends State<AnalysisPage> {
   }
 
   Widget hasDataFalse(){
-    return Center(
-      child: Text('Datanya Masih Kosong :)', style: TextStyle(fontSize: 18),)
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Center(
+        child: Text('Data Kamu Masih Kosong :)', style: TextStyle(fontSize: 18),)
+      )
     );
   }
-
 }
-

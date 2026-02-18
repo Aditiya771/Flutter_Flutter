@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:pencatat_uang/data/spendlog_storage.dart';
+import 'confirmpopup.dart';
 
-List<String> actionList = ['Settings', 'Buat Data Palsu', 'Bersihkan History'];
+enum actionList {
+  fakeData(label: 'Buat Data Palsu', icon: Icons.storage),
+  clearHistory(label: 'Bersihkan History', icon: Icons.delete_sweep);
+  
+  final String label;
+  final IconData icon;
+  const actionList({required this.label, required this.icon});
+  }
+
 
 class PopUpAction extends StatelessWidget{
   
@@ -9,20 +17,30 @@ class PopUpAction extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return PopupMenuButton<String>(
+ 
+    void popUp(value){
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context){
+          return Dialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Confirmpopup(type: value,));
+        }
+      );    
+    }  
+
+    return PopupMenuButton<actionList>(
       onSelected: (value) {
-        if(value == 'Buat Data Palsu'){
-          SpendlogStorage.generateDummyData();
-        }
-        else if (value == 'Bersihkan History'){
-          SpendlogStorage.hapusJawir();
-        }
+        popUp(value);
       },
       itemBuilder: (BuildContext context) {
-        return actionList.map((String value) {
-          return PopupMenuItem<String>(
-            value: value,
-            child: Text(value),
+        return actionList.values.map((actionList item) {
+          return PopupMenuItem<actionList>(
+            value: item,
+            child: Row(children:[
+              Icon(item.icon, size: 20,),
+              const SizedBox(width: 10,),
+              Text(item.label)]),
           );
         }).toList();
       },

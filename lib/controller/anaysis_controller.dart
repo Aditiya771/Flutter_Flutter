@@ -33,15 +33,13 @@ class AnalysisController {
     totalByCategory = null;
   }
 
-
-  String getMonth(String? month){
-    if(month == null) {return 'Kamu Belum Punya Catatan :)';}
+  String getMonth(String month){
     String numberMonth = month.split('-')[1];
     String year = month.split('-')[0];
     if(numberMonth[0] == '0'){numberMonth = numberMonth.substring(1);}
     List<String> monthNameTemp = ['WiwokDetok','Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober','November','Desember'];
     String nameMonth = monthNameTemp[int.parse(numberMonth)];
-    return '${nameMonth} $year';
+    return '$nameMonth $year';
   }
 
 
@@ -61,8 +59,7 @@ class AnalysisController {
     return result;
   }
 
-  int get getTotalSpendAllMonth {
-  
+  int get getTotalSpendAllMonth { 
     int result = 0;
     getTotalSpendByDate.forEach((key, value){result += value;});
     totalSpendAllMonth = result;
@@ -70,7 +67,6 @@ class AnalysisController {
   }
 
   double get getAverage{
-  
     average = getTotalSpendAllMonth / getTotalSpendByDate.length;
     return average!;
   }
@@ -101,9 +97,7 @@ class AnalysisController {
 
   List<FlSpot> get getLineChartSpots {
     final data = getTotalSpendByDate;
-
     final sortedEntries = data.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
-
     return List.generate(sortedEntries.length, (index) {
       final entry = sortedEntries[index];
       final day = DateTime.parse(entry.key).day.toDouble();

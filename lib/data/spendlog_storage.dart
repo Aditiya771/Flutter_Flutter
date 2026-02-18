@@ -85,7 +85,7 @@ class SpendlogStorage {
 
 //---------------------------------------------------------------------
   //BERSIHKAN SEMUA DATA
-  static Future<void> hapusJawir() async{
+  static Future<void> clearrAll() async{
     final fileTransaction = await getFile();
 
     if(await fileTransaction.exists()){

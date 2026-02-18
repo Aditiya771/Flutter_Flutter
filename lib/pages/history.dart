@@ -21,7 +21,6 @@ class _HistoryPageState extends State<HistoryPage>{
   Map<String,dynamic> realDataTransaction = {};
   bool isCalenderExpand = false;
 
-
   List<String> month = [];
   List<String> date = [];
 
@@ -286,4 +285,3 @@ class _HistoryPageState extends State<HistoryPage>{
     ));
   } 
 }
-

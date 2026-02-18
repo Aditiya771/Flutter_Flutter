@@ -2,9 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:pencatat_uang/data/spendlog_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-final List<String> category = ['Makanan', 'Hiburan','Transport','Tagihan','Pendidkan', 'Politik','Lainnya'];
 final formatNumberID = NumberFormat.decimalPattern('id_ID');
+const List<String> defaultCategory = ['Konsumsi', 'Hiburan','Transport','Tagihan','Pendidkan','Lainnya'];
 
 class SavePopUpSheet extends StatefulWidget{
 
@@ -19,11 +20,25 @@ class SavePopUpSheet extends StatefulWidget{
 class SavePopUpSheetState extends State<SavePopUpSheet> {
   String selectedCategory ='';
   late final TextEditingController noteControl = TextEditingController();
-  
+  List<String> category = [];
+
   @override
+  void initState(){
+    super.initState();
+    loadCategory();
+  }
+
   void dispose(){
     noteControl.dispose();
     super.dispose();
+  }
+  
+  Future<void> loadCategory()async{
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getStringList('categories');
+    setState(() {   
+      category = saved ?? defaultCategory;
+    });
   }
 
   Widget build(BuildContext context) {
@@ -195,8 +210,6 @@ class SavePopUpSheetState extends State<SavePopUpSheet> {
   }
 
 }
-
-
 
 //PILIHAN KATEGORI
 class CategoryList extends StatelessWidget{
