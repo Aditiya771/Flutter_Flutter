@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pencatat_uang/data/repository.dart';
 import 'package:intl/intl.dart';
+import '../data/spendlog_storage.dart';
 
 final formatId = NumberFormat.decimalPattern('id_ID');
-enum MoveDirection {forward, backward}
-enum FromDate {past, future, nope}
 
+enum MoveDirection { forward, backward }
+enum FromDate { past, future, nope }
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -14,236 +14,293 @@ class HistoryPage extends StatefulWidget {
   State<HistoryPage> createState() => _HistoryPageState();
 }
 
+class _HistoryPageState extends State<HistoryPage> {
+  Future<Map<String, dynamic>>? _futureTransaction;
 
-class _HistoryPageState extends State<HistoryPage>{
-
-  late Future<Map<String, dynamic>> _futureTransaction;
-  Map<String,dynamic> realDataTransaction = {};
-  bool isCalenderExpand = false;
+  Map<String, dynamic> realDataTransaction = {};
 
   List<String> month = [];
   List<String> date = [];
 
-  String? selectedDate;
   String? selectedMonth;
+  String? selectedDate;
 
-  String getMonth(String month){
+  bool isCalenderExpand = false;
+  FromDate _targetMoving = FromDate.nope;
+
+  @override
+  void initState() {
+    super.initState();
+    initData();
+  }
+
+  Future<void> initData() async {
+    month = await SpendlogStorage.getAllMonth();
+
+    selectedMonth = month.isNotEmpty ? month.last : null;
+
+    if (selectedMonth != null) {
+      _futureTransaction =
+          SpendlogStorage.loadTransaction(selectedMonth);
+    }
+
+    setState(() {});
+  }
+
+  String getMonth(String month) {
     String numberMonth = month.split('-')[1];
     String year = month.split('-')[0];
-    if(numberMonth[0] == '0'){numberMonth = numberMonth.substring(1);}
-    List<String> monthNameTemp = ['hehehe :)','Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    String nameMonth = monthNameTemp[int.parse(numberMonth)];
-    return '${nameMonth} $year';
+
+    if (numberMonth[0] == '0') {
+      numberMonth = numberMonth.substring(1);
+    }
+
+    List<String> monthNameTemp = [
+      '',
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember'
+    ];
+
+    return '${monthNameTemp[int.parse(numberMonth)]} $year';
+  }
+
+  void moveMonth(MoveDirection direction, FromDate fromWhat) {
+    if (selectedMonth == null) return;
+
+    int currentIndex = month.indexOf(selectedMonth!);
+
+    if (direction == MoveDirection.forward) {
+      if (currentIndex < month.length - 1) {
+        selectedMonth = month[currentIndex + 1];
+        selectedDate = null;
+        _targetMoving = fromWhat;
+
+        _futureTransaction =
+            SpendlogStorage.loadTransaction(selectedMonth);
+
+      } else {
+        showSnack('Ini bulan terbaru');
+      }
+    }
+    else {
+      if (currentIndex > 0) {
+        selectedMonth = month[currentIndex - 1];
+        selectedDate = null;
+        _targetMoving = fromWhat;
+
+        _futureTransaction =
+            SpendlogStorage.loadTransaction(selectedMonth);
+
+      } else {
+        showSnack('Ini bulan terlama');
+      }
+    }
+  }
+
+  void moveDate(MoveDirection direction) {
+    if (selectedDate == null || date.isEmpty) return;
+
+    int currentIndex = date.indexOf(selectedDate!);
+
+    if (direction == MoveDirection.forward) {
+      if (currentIndex < date.length - 1) {
+        selectedDate = date[currentIndex + 1];
+      }
+      else {
+        moveMonth(MoveDirection.forward, FromDate.past);
+      }
+    }
+    else {
+      if (currentIndex > 0) {
+        selectedDate = date[currentIndex - 1];
+      }
+      else {
+        moveMonth(MoveDirection.backward, FromDate.future);
+      }
+    }
   }
 
   void calenderSwitchDate(String dateValue){
     selectedDate = dateValue;
   }
 
-  void moveMonth(MoveDirection direction, FromDate fromWhat){
-    int currentIdex = month.indexOf(selectedMonth!);
-    if(direction == MoveDirection.forward){
-      if(currentIdex <  month.length - 1){
-        selectedMonth = month[currentIdex+1];
-        date = (realDataTransaction[selectedMonth!] as Map<String,dynamic>).keys.toList();
-        if(fromWhat == FromDate.past){
-          selectedDate = date[0];}
-        else{selectedDate = date.last;}
-      }
-      else{
-        ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(
-          const SnackBar(content:
-          Text('Ini Adalah Bulan Terlama.'),
-          duration: Duration(seconds: 2),)
-        );
-      }
-    }
-    else{
-      if(currentIdex > 0){
-        selectedMonth = month[currentIdex-1];
-        date = (realDataTransaction[selectedMonth!] as Map<String,dynamic>).keys.toList();       
-        selectedDate = date.last;}
-      else{
-        ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(
-          const SnackBar(content:
-          Text('Ini Adalah Bulan Terlama.'),
-          duration: Duration(seconds: 2),));
-      }
-    }
-  }
+  String getDate(String date) => date.split('-').last;
 
-  void moveDate(MoveDirection direction){
-    int currentIndex = date.indexOf(selectedDate!);
-
-    if(direction == MoveDirection.forward){
-      if(currentIndex < date.length - 1){
-        selectedDate = date[currentIndex + 1];}
-      else{
-        moveMonth(MoveDirection.forward, FromDate.past);}
-    }
-
-    else{
-      if(currentIndex > 0){
-        selectedDate = date[currentIndex - 1];}
-      else{
-        moveMonth(MoveDirection.backward, FromDate.future);}
-    }
-  }
-  
-  
-
-  String getDate(String date){
-    return date.split('-').last;
+  void showSnack(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(text)),
+      );
   }
 
   @override
-  void initState(){
-    super.initState();
-    _futureTransaction = Repository.loadMemoryData();
-  }
-
-
-  Widget build(BuildContext context){
-    return FutureBuilder<Map<String,dynamic>>(
-      future: _futureTransaction, 
-      builder: (context, process){
-        if(process.connectionState == ConnectionState.waiting){
-          return const CircularProgressIndicator();
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _futureTransaction,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
         }
 
-        if(!process.hasData || process.data!.isEmpty){
-          return Center(child: const Text('Kamu belum punya data, belanja dulu!', style: TextStyle(fontSize: 18),));
+        if (snapshot.hasError) {
+          return const Center(child: Text('Terjadi error'));
         }
 
-        if(process.hasError){
-          return Center(
-           child: Text('Terjadi kesalahan dalam pemprosesan data, silahkan mulai ulang :)', style: TextStyle(fontSize: 18),));
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text('Belum ada data di bulan ini'),
+          );
         }
 
-        final dataTransaction = process.data!;
+        realDataTransaction = snapshot.data!;
 
-        if(realDataTransaction.isEmpty){
-          realDataTransaction = dataTransaction;
-        }
-        
-        if(selectedMonth == null){
-          month = realDataTransaction.keys.toList();
-          selectedMonth = month.last;
-        }
+        final monthData = realDataTransaction[selectedMonth];
 
-        if(selectedDate == null){
-          date = (realDataTransaction[selectedMonth!] as Map<String,dynamic>).keys.toList();
-          selectedDate = date.last;
+        if (selectedDate == null) {
+          if (monthData != null && monthData is Map<String, dynamic>) {
+            date = monthData.keys.toList()..sort();
+
+            if (date.isNotEmpty) {
+              selectedDate = (_targetMoving == FromDate.past)
+                  ? date.first
+                  : date.last;
+            }
+          } else {
+            date = [];
+            selectedDate = null;
+          }
+
+          _targetMoving = FromDate.nope;
         }
 
         final transactionList =
-          List<Map<String, dynamic>>.from(
-            realDataTransaction[selectedMonth]?[selectedDate] ?? [],
-          );
-        
+            List<Map<String, dynamic>>.from(
+          realDataTransaction[selectedMonth]?[selectedDate] ?? [],
+        );
 
-        //LAYOUT UI
         return Column(
           children: [
-
-          //HEADER BULAN
+            // HEADER BULAN
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed:() {
+                  onPressed: () {
                     setState(() {
                       moveMonth(MoveDirection.backward, FromDate.nope);
                     });
-                  }, 
-                  icon: const Icon(Icons.chevron_left)),
-
-                InkWell(
-                  onTap: (){debugPrint('pindah bulan');},
-                  child: Text('${getMonth(selectedMonth!)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
-            
-
+                  },
+                  icon: const Icon(Icons.chevron_left),
+                ),
+                Text(
+                  selectedMonth != null
+                      ? getMonth(selectedMonth!)
+                      : '-',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
                 IconButton(
-                  onPressed: (){
+                  onPressed: () {
                     setState(() {
                       moveMonth(MoveDirection.forward, FromDate.nope);
                     });
-                  }, 
-                  icon: const Icon(Icons.chevron_right)),
-              ],),
+                  },
+                  icon: const Icon(Icons.chevron_right),
+                ),
+              ],
+            ),
 
-
-            //HEADER TANGGAL/KALENDER
+            // KALENDER
             GestureDetector(
               onVerticalDragEnd: (details) {
-                final velocity = details.velocity.pixelsPerSecond.dy;
-
-                if(velocity < -100){
-                  setState(() {
-                    isCalenderExpand = false;
-                  });
-                } else{setState(() {
-                  isCalenderExpand = true;
-                });}
+                setState(() {
+                  isCalenderExpand =
+                      details.velocity.pixelsPerSecond.dy > 0;
+                });
               },
               child: AnimatedSize(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.bounceOut,
-                child: isCalenderExpand ? calenderGrid() : calenderRow(),)
-            ),  
-
-
-            //DAFTAR TRANSAKSI
-            Expanded(child:
-              ListView.builder(
-                itemCount: transactionList.length,
-                itemBuilder: (context, index){
-                  final value = transactionList[index];
-                  return ListTile(
-                      title: Text('${value['category']}: Rp. ${formatId.format(value['value'])}', style: const TextStyle(fontSize: 15),),
-                      subtitle: Text('Keterangan: ${value['note']}',style: const TextStyle(fontSize: 13),),
-                      trailing: Text(value['time'],style: const TextStyle(fontSize: 13),),
-                  );
-                },
+                duration: const Duration(milliseconds: 200),
+                child: isCalenderExpand
+                    ? calenderGrid()
+                    : calenderRow(),
               ),
+            ),
+
+            // LIST TRANSAKSI
+            Expanded(
+              child: transactionList.isEmpty
+                  ? const Center(child: Text('Tidak ada transaksi'))
+                  : ListView.builder(
+                      itemCount: transactionList.length,
+                      itemBuilder: (context, index) {
+                        final item = transactionList[index];
+                        return ListTile(
+                          title: Text(
+                              '${item['category']} - Rp ${formatId.format(item['value'])}'),
+                          subtitle: Text(item['note'] ?? ''),
+                          trailing: Text(item['time'] ?? ''),
+                        );
+                      },
+                    ),
             )
-          ]
+          ],
         );
-      }
+      },
     );
   }
 
-  Widget calenderRow(){
+  Widget calenderRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-      IconButton(
-        onPressed: () {
-          setState(() {
-            moveDate(MoveDirection.backward);
-          });
-        }, 
-        icon: const Icon(Icons.chevron_left)),
-
-      InkWell(
-        onTap: (){setState(() {
-          isCalenderExpand = !isCalenderExpand;
-        });},
-        child: Text('Tanggal ${getDate(selectedDate!)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)),
-  
-
-      IconButton(
-        onPressed: (){
-          setState(() {
-            moveDate(MoveDirection.forward);
-          });
-        }, 
-        icon: const Icon(Icons.chevron_right)),],
-      
+        IconButton(
+          onPressed: () {
+            setState(() {
+              moveDate(MoveDirection.backward);
+            });
+          },
+          icon: const Icon(Icons.chevron_left),
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              isCalenderExpand = true;
+            });
+          },
+          child: Text(
+            selectedDate != null
+                ? 'Tanggal ${getDate(selectedDate!)}'
+                : '-',
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              moveDate(MoveDirection.forward);
+            });
+          },
+          icon: const Icon(Icons.chevron_right),
+        ),
+      ],
     );
   }
 
-  Widget calenderGrid(){
+  Widget calenderGrid() {
     return SingleChildScrollView(child:  Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: const Color.fromARGB(255, 147, 205, 253),),
       margin: EdgeInsets.symmetric(horizontal: 5),
@@ -283,5 +340,5 @@ class _HistoryPageState extends State<HistoryPage>{
 
       ])
     ));
-  } 
+  }
 }

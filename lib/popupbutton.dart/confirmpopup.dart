@@ -20,7 +20,7 @@ class Confirmpopup extends StatelessWidget{
       case actionList.fakeData:
         SpendlogStorage.generateDummyData();
       case actionList.clearHistory:
-        SpendlogStorage.clearrAll();
+        SpendlogStorage.clearAllTransaction();
     }
   }
 

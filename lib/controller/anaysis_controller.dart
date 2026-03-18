@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:pencatat_uang/data/repository.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../data/spendlog_storage.dart';
 
 enum MoveDirection {forward, backward}
 
 class AnalysisController {
-  static Map<String, dynamic> get allDataTransaction => Repository.allDataTransaction ?? {};
-  bool get hasData => Repository.allDataTransaction?.isEmpty ?? false;
-  List<String> get allMonth => allDataTransaction.keys.toList()..sort();
+  bool hasData = false;
+  Map<String,dynamic> allDataTransaction = {};
+  List<String> allMonth = [];
   String? selectedMonth;
-  
-  String? get getSelectedMonth {
-    if (selectedMonth == null && allMonth.isNotEmpty) {
-      selectedMonth = allMonth.last;
-    }
+
+
+  Future<String?> getLastMonth() async{
+    selectedMonth = await SpendlogStorage.getLastMonth();
     return selectedMonth;
   }
 
-  Map<String, dynamic> get monthNow => getSelectedMonth != null ? allDataTransaction[getSelectedMonth] ?? {} : {};
+  Future<String?> get getSelectedMonth async => selectedMonth ?? await getLastMonth();
+
+  Map<String, dynamic> get monthNow => selectedMonth != null ? allDataTransaction[selectedMonth] ?? {} : {};
 
   Map<String, int>? totalSpendByDate;
   int? totalSpendAllMonth;
@@ -25,8 +26,22 @@ class AnalysisController {
   List<MapEntry<String,int>> highestDate = [];
   Map<String,int>? totalByCategory;
 
+  Future<Map<String,dynamic>> getAllData() async{
+    if(selectedMonth == null){
+      await getLastMonth();  
+    }
+    allDataTransaction = await SpendlogStorage.loadTransaction(selectedMonth);
+    return allDataTransaction;
+  }
+
+  Future<List<String>> getAllMonth() async{
+    if(allMonth.isEmpty){
+      allMonth = await SpendlogStorage.getAllMonth();
+    }
+    return allMonth;
+  }
+
   void resetController(){
-    selectedMonth = null;
     totalSpendByDate = null;
     totalSpendAllMonth = null;
     average = null;
@@ -45,9 +60,9 @@ class AnalysisController {
 
   Map<String, int> get getTotalSpendByDate {
     final result = <String, int>{};
-    monthNow.forEach((date, transactions) {
+    monthNow.forEach((date, transactions){
       int totalByDate = 0;
-      if (transactions is List) {
+      if (transactions is List){
         for (var item in transactions) {
           totalByDate += (item['value'] ?? 0) as int;
         }
@@ -67,6 +82,7 @@ class AnalysisController {
   }
 
   double get getAverage{
+    if (getTotalSpendByDate.isEmpty) return 0;
     average = getTotalSpendAllMonth / getTotalSpendByDate.length;
     return average!;
   }
@@ -106,8 +122,8 @@ class AnalysisController {
   }
 
   double get getMaxX {
-    if (getSelectedMonth == null) return 0;
-    final date = DateTime.parse("${getSelectedMonth!}-01");
+    if (selectedMonth == null) return 0;
+    final date = DateTime.parse("${selectedMonth!}-01");
     final lastDay = DateTime(date.year, date.month + 1, 0).day;
     return lastDay.toDouble();
   }
@@ -169,8 +185,9 @@ class AnalysisController {
   }
 
   void moveMonth(MoveDirection direction){
-    int currentIndex = allMonth.indexOf(getSelectedMonth!);
-    if(direction == MoveDirection.forward){
+    int currentIndex = allMonth.indexOf(selectedMonth!);
+
+    if(direction == MoveDirection.backward){
       if(currentIndex <  allMonth.length - 1){
         selectedMonth = allMonth[currentIndex+1];
       }
@@ -180,6 +197,7 @@ class AnalysisController {
         selectedMonth = allMonth[currentIndex -1];
       }
     }
+    resetController();
   }
 
 }

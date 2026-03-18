@@ -200,7 +200,7 @@ class CalculatorPanelState extends State<CalculatorPanel>{
             width: double.infinity,
             alignment: Alignment.bottomRight,
             decoration: const BoxDecoration(
-              color: const Color.fromARGB(255, 147, 205, 253),
+              color: Color.fromARGB(255, 147, 205, 253),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),

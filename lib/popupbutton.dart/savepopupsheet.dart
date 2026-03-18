@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pencatat_uang/data/spendlog_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 final formatNumberID = NumberFormat.decimalPattern('id_ID');
 const List<String> defaultCategory = ['Konsumsi', 'Hiburan','Transport','Tagihan','Pendidkan','Lainnya'];
 
@@ -28,6 +29,7 @@ class SavePopUpSheetState extends State<SavePopUpSheet> {
     loadCategory();
   }
 
+  @override
   void dispose(){
     noteControl.dispose();
     super.dispose();
@@ -41,6 +43,7 @@ class SavePopUpSheetState extends State<SavePopUpSheet> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(15),
@@ -178,8 +181,7 @@ class SavePopUpSheetState extends State<SavePopUpSheet> {
                     category: selectedCategory, 
                     note: noteControl.text.trim(), 
                     timeDate: DateTime.now()
-                    );
-                  
+                  );                  
                   SpendlogStorage.saveTransaction(transaction);
                   Navigator.pop(context);}
                 else{

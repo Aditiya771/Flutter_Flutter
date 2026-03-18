@@ -16,13 +16,30 @@ class AnalysisPageState extends State<AnalysisPage> {
   final controller = AnalysisController();
 
   @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    await controller.getLastMonth();
+    await controller.getAllMonth();
+    await controller.getAllData();
+
+    if (controller.allMonth.isNotEmpty) {
+      controller.hasData = true;
+    }
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context){
     return Container(
       height: double.infinity,
       width: double.infinity,
       color: const Color.fromARGB(255, 213, 236, 247),
       child: controller.hasData ?
-        hasDataFalse():hasDataTrue());
+        hasDataTrue():hasDataFalse());
   }
       
   Widget hasDataTrue(){
@@ -43,25 +60,25 @@ class AnalysisPageState extends State<AnalysisPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    onPressed: (){
-                      setState(() {
-                        controller.moveMonth(MoveDirection.backward);
-                      });
+                    onPressed: () async{
+                      controller.moveMonth(MoveDirection.backward);
+                      await controller.getAllData();
+                      setState(() {});
                     },
                     icon: Icon(Icons.keyboard_arrow_left_outlined),
                     iconSize: 20,),
-                  Text(controller.getMonth(controller.getSelectedMonth!), style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
+                  Text(controller.selectedMonth != null? controller.getMonth(controller.selectedMonth!): '2026-01',
+                    style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)
+                  ),
                   IconButton(
-                    onPressed: () {
-                      setState(() {
-                        controller.moveMonth(MoveDirection.forward);
-                      });
-                    },
+                    onPressed: () async{
+                      controller.moveMonth(MoveDirection.forward);
+                      await controller.getAllData();
+                      setState((){});
+                   },
                     icon: Icon(Icons.keyboard_arrow_right_outlined),
                     iconSize: 20),
                 ],),
-
-              
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

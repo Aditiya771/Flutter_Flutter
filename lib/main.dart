@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pencatat_uang/homepage.dart';
-import 'package:pencatat_uang/data/repository.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Repository.loadMemoryData();
+void main() {
   runApp(MyApp());
 }
 
