@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -52,7 +53,6 @@ class SpendlogStorage {
         'category': row['category'],
       });
     }
-
     return nestedData;
   }
 
@@ -99,6 +99,8 @@ class SpendlogStorage {
       where: 'date LIKE ?',
       whereArgs: ["$month%"]
     );
+    debugPrint('loadTransaction dipanggil');
+    print('loadTransaction dipanggil');
     return convertToNestedMap(data);
   }
 
@@ -117,6 +119,8 @@ class SpendlogStorage {
     if (result.isEmpty) return null;
 
     final String fullDate = result.first['date'] as String;
+    debugPrint('getlastMonth dipanggil');
+    print('getlastMonth dipanggil');
     return fullDate.substring(0, 7);
   }
 //------------------------------------------------------------------------------
@@ -125,8 +129,10 @@ class SpendlogStorage {
     final db = await getFile();
 
     final List<Map<String,dynamic>> result = await db.rawQuery(
-      'SELECT DISTINCT SUBSTR(date, 1, 7) AS month FROM $tableName ORDER BY date DESC'
+      'SELECT DISTINCT SUBSTR(date, 1, 7) AS month FROM $tableName ORDER BY date ASC'
     );
+    debugPrint('getAllMonth dipanggil');
+    debugPrint('${result.map((item) => item['month'] as String).toList()}');
     return result.map((item) => item['month'] as String).toList();
   }
 

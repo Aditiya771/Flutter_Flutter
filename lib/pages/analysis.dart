@@ -61,7 +61,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                 children: [
                   IconButton(
                     onPressed: () async{
-                      controller.moveMonth(MoveDirection.backward);
+                      controller.moveMonth(MoveDirection.backward, context);
                       await controller.getAllData();
                       setState(() {});
                     },
@@ -72,7 +72,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                   ),
                   IconButton(
                     onPressed: () async{
-                      controller.moveMonth(MoveDirection.forward);
+                      controller.moveMonth(MoveDirection.forward, context);
                       await controller.getAllData();
                       setState((){});
                    },
@@ -189,7 +189,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                           bottomTitles: AxisTitles( sideTitles: SideTitles(
                             showTitles : true,
                             getTitlesWidget: (value, meta) {
-                              if (value.toInt() % 5 != 0) {
+                              if (value.toInt() % 5000 != 0) {
                                 return const SizedBox.shrink();
                               }
                               return Padding(
@@ -230,9 +230,18 @@ class AnalysisPageState extends State<AnalysisPage> {
                         ],
                       ),
                     )),
-                    SizedBox(width: 20,),
+                    SizedBox(width: 20),
+                    
                   ])
                 ),
+                Text('*Hasil chart bisa tidak muncul atau terlihat aneh apabila jumlah hari belum cukup banyak',
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 126, 126, 126),
+                    fontSize: 8,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold
+                  )
+                )
               ]
             )
         ),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../data/spendlog_storage.dart';
+import '../homepage.dart';
 
 enum MoveDirection {forward, backward}
 
 class AnalysisController {
+
   bool hasData = false;
   Map<String,dynamic> allDataTransaction = {};
   List<String> allMonth = [];
   String? selectedMonth;
-
 
   Future<String?> getLastMonth() async{
     selectedMonth = await SpendlogStorage.getLastMonth();
@@ -146,7 +147,10 @@ class AnalysisController {
     const Color.fromARGB(255, 233, 212, 137),
     Colors.cyanAccent,
     Colors.grey,
-    Colors.pinkAccent
+    Colors.pinkAccent,
+    Colors.deepOrange,
+    Colors.teal,
+    Colors.purpleAccent,
   ];
 
   List<PieChartSectionData> get getPieSections {
@@ -184,17 +188,17 @@ class AnalysisController {
     }).toList();
   }
 
-  void moveMonth(MoveDirection direction){
+  void moveMonth(MoveDirection direction, BuildContext context){
     int currentIndex = allMonth.indexOf(selectedMonth!);
 
     if(direction == MoveDirection.backward){
-      if(currentIndex <  allMonth.length - 1){
-        selectedMonth = allMonth[currentIndex+1];
+      if(currentIndex > 0){
+        selectedMonth = allMonth[currentIndex-1];
       }
     }     
     else{
-      if(currentIndex > 0){
-        selectedMonth = allMonth[currentIndex -1];
+      if(currentIndex < allMonth.length - 1){
+        selectedMonth = allMonth[currentIndex + 1];
       }
     }
     resetController();
