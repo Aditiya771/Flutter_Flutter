@@ -99,8 +99,7 @@ class SpendlogStorage {
       where: 'date LIKE ?',
       whereArgs: ["$month%"]
     );
-    debugPrint('loadTransaction dipanggil');
-    print('loadTransaction dipanggil');
+    debugPrint('loadTransaction data dipanggil (SpendLog Storage)');
     return convertToNestedMap(data);
   }
 
@@ -119,8 +118,8 @@ class SpendlogStorage {
     if (result.isEmpty) return null;
 
     final String fullDate = result.first['date'] as String;
-    debugPrint('getlastMonth dipanggil');
-    print('getlastMonth dipanggil');
+
+    debugPrint('geLastMonth dipanggil (SpendLog Storage)');
     return fullDate.substring(0, 7);
   }
 //------------------------------------------------------------------------------
@@ -131,7 +130,7 @@ class SpendlogStorage {
     final List<Map<String,dynamic>> result = await db.rawQuery(
       'SELECT DISTINCT SUBSTR(date, 1, 7) AS month FROM $tableName ORDER BY date ASC'
     );
-    debugPrint('getAllMonth dipanggil');
+    debugPrint('getAllMonth dipanggil (SpendLog Storage)');
     debugPrint('${result.map((item) => item['month'] as String).toList()}');
     return result.map((item) => item['month'] as String).toList();
   }

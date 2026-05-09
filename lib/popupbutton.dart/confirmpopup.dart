@@ -3,23 +3,23 @@ import 'package:pencatat_uang/popupbutton.dart/actionpopup.dart';
 import '../data/spendlog_storage.dart';
 
 class Confirmpopup extends StatelessWidget{
-  final actionList type;
+  final ActionList type;
   const Confirmpopup({super.key, required this.type});
 
-  String getExplanation(actionList type){
+  String getExplanation(ActionList type){
     switch (type) {
-      case actionList.fakeData:
+      case ActionList.fakeData:
         return 'Perintah ini akan membuat data kamu terhapus dan diganti oleh data palsu, yakin ingin melanjutkan?';
-      case actionList.clearHistory:
+      case ActionList.clearHistory:
         return 'Yakin ingin menghapus semua histori kamu?';    
     }
   }
 
-  void getAction(actionList type){
+  void getAction(ActionList type){
     switch (type) {
-      case actionList.fakeData:
+      case ActionList.fakeData:
         SpendlogStorage.generateDummyData();
-      case actionList.clearHistory:
+      case ActionList.clearHistory:
         SpendlogStorage.clearAllTransaction();
     }
   }

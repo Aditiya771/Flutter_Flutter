@@ -15,10 +15,13 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
+    loadData();
+  }
 
-    controller.initData(() {
-      setState(() {});
-    });
+  Future<void> loadData() async {
+    await controller.initData();
+    if (!mounted) return;
+    setState(() {});
   }
 
   @override

@@ -29,6 +29,7 @@ class AnalysisPageState extends State<AnalysisPage> {
     if (controller.allMonth.isNotEmpty) {
       controller.hasData = true;
     }
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -46,7 +47,7 @@ class AnalysisPageState extends State<AnalysisPage> {
     return Column(children: [
 
         //HEADE HALAMAN
-        Text('Ringkasan Analisis Pengeluaran Bulan', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 3, 30, 67), fontWeight: FontWeight.bold)),
+        Text('Ringkasan Analisis Pengeluaran Perbulan', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 3, 30, 67), fontWeight: FontWeight.bold)),
           
     
         //ELEMEN PERTAMA
@@ -63,6 +64,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                     onPressed: () async{
                       controller.moveMonth(MoveDirection.backward, context);
                       await controller.getAllData();
+                      if (!mounted) return;
                       setState(() {});
                     },
                     icon: Icon(Icons.keyboard_arrow_left_outlined),
@@ -74,6 +76,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                     onPressed: () async{
                       controller.moveMonth(MoveDirection.forward, context);
                       await controller.getAllData();
+                      if (!mounted) return;
                       setState((){});
                    },
                     icon: Icon(Icons.keyboard_arrow_right_outlined),
@@ -234,7 +237,7 @@ class AnalysisPageState extends State<AnalysisPage> {
                     
                   ])
                 ),
-                Text('*Hasil chart bisa tidak muncul atau terlihat aneh apabila jumlah hari belum cukup banyak',
+                Text('* Hasil chart mungkin tidak muncul atau terlihat aneh apabila jumlah hari belum cukup\n   banyak',
                   style: TextStyle(
                     color: const Color.fromARGB(255, 126, 126, 126),
                     fontSize: 8,

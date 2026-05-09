@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'confirmpopup.dart';
 
-enum actionList {
+enum ActionList {
   fakeData(label: 'Buat Data Palsu', icon: Icons.storage),
   clearHistory(label: 'Bersihkan History', icon: Icons.delete_sweep);
   
   final String label;
   final IconData icon;
-  const actionList({required this.label, required this.icon});
+  const ActionList({required this.label, required this.icon});
   }
 
 class PopUpAction extends StatelessWidget{
@@ -28,13 +28,14 @@ class PopUpAction extends StatelessWidget{
       );    
     }  
 
-    return PopupMenuButton<actionList>(
+    return PopupMenuButton<ActionList>(
+      iconColor: Colors.white,
       onSelected: (value) {
         popUp(value);
       },
       itemBuilder: (BuildContext context) {
-        return actionList.values.map((actionList item) {
-          return PopupMenuItem<actionList>(
+        return ActionList.values.map((ActionList item) {
+          return PopupMenuItem<ActionList>(
             value: item,
             child: Row(children:[
               Icon(item.icon, size: 20,),

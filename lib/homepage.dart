@@ -3,7 +3,6 @@ import 'package:pencatat_uang/pages/calculatorpanel.dart';
 import 'pages/analysis.dart';
 import 'pages/history.dart';
 import 'package:pencatat_uang/popupbutton.dart/actionpopup.dart';
-import '../data/spendlog_storage.dart';
 
 final List<Tab> myTab = [
   Tab(icon: Icon(Icons.calculate), text: "Kalkulator"),
@@ -19,24 +18,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>  {
-  List<String> allMonth = [];
-
-  @override
-  void initState(){
-    super.initState();
-    loadMonths();
-  }
-
-  Future<void> loadMonths() async {
-    if (allMonth.isEmpty){
-      final data = await SpendlogStorage.getAllMonth();
-      setState(() {
-        allMonth = data;
-      });
-      debugPrint('homepage getAllMonth dipanggil');
-    }
-  }
-
   
   @override
   Widget build(BuildContext context){

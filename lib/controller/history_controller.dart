@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../data/spendlog_storage.dart';
+import '../data/app_chache.dart';
 
 final formatId = NumberFormat.decimalPattern('id_ID');
 
@@ -8,6 +8,7 @@ enum MoveDirection { forward, backward }
 enum FromDate { past, future, nope }
 
 class HistoryController {
+  final cache = AppCache();
   Future<Map<String, dynamic>>? futureTransaction;
 
   Map<String, dynamic> realDataTransaction = {};
@@ -21,17 +22,14 @@ class HistoryController {
   bool isCalenderExpand = false;
   FromDate targetMoving = FromDate.nope;
 
-  Future<void> initData(VoidCallback refresh) async {
-    month = await SpendlogStorage.getAllMonth();
+  Future<void> initData() async {
+    month = await cache.getAllMonth();
 
     selectedMonth = month.isNotEmpty ? month.last : null;
 
     if (selectedMonth != null) {
-      futureTransaction =
-          SpendlogStorage.loadTransaction(selectedMonth);
+      futureTransaction = cache.getMonthTransaction(selectedMonth!);
     }
-
-    refresh();
   }
 
   String getMonth(String month) {
@@ -67,37 +65,39 @@ class HistoryController {
     int currentIndex = month.indexOf(selectedMonth!);
 
     if (direction == MoveDirection.forward) {
+      if(currentIndex == -1){
+          showSnack(context, 'Ini bulan terbaru');
+          return;
+        }
       if (currentIndex < month.length - 1) {
         selectedMonth = month[currentIndex + 1];
         selectedDate = null;
         targetMoving = fromWhat;
 
-        futureTransaction =
-            SpendlogStorage.loadTransaction(selectedMonth);
-
-      } else {
+        futureTransaction = cache.getMonthTransaction(selectedMonth!);
+        
+      }
+      else {
         showSnack(context, 'Ini bulan terbaru');
       }
     }
+    
     else {
       if (currentIndex > 0) {
         selectedMonth = month[currentIndex - 1];
         selectedDate = null;
         targetMoving = fromWhat;
 
-        futureTransaction =
-            SpendlogStorage.loadTransaction(selectedMonth);
+        futureTransaction = cache.getMonthTransaction(selectedMonth!);
+      }
 
-      } else {
+      else {
         showSnack(context, 'Ini bulan terlama');
       }
     }
   }
 
-  void moveDate(
-    MoveDirection direction,
-    BuildContext context,
-  ) {
+  void moveDate(MoveDirection direction, BuildContext context,) {
     if (selectedDate == null || date.isEmpty) return;
 
     int currentIndex = date.indexOf(selectedDate!);
