@@ -55,7 +55,6 @@ class AppCache {
 
   void clearCache() {
     allMonthList.clear();
-
     monthlyCache.clear();
   }
 }

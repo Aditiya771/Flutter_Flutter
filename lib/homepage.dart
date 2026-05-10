@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage>  {
           backgroundColor: Colors.blue,
           title: Text("SpendLog",
             style: TextStyle(fontSize: 25, color: Colors.white)),
-          actions: [PopUpAction()]   
+          actions: [PopUpAction(),]   
         ),
 
         body: TabBarView(

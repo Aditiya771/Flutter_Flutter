@@ -1,6 +1,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'app_chache.dart';
 
 class Transaction {
   final int amount;
@@ -17,6 +18,7 @@ class Transaction {
 }
 
 class SpendlogStorage {
+  final cache = AppCache();
   static const tableName = 'transactions';
   //AMBIL DIREKTORY
   static Future<Database> getFile() async{

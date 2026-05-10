@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:pencatat_uang/data/app_chache.dart';
 import 'package:pencatat_uang/data/spendlog_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +20,7 @@ class SavePopUpSheet extends StatefulWidget{
 }
 
 class SavePopUpSheetState extends State<SavePopUpSheet> {
+  final cache = AppCache();
   String selectedCategory ='';
   late final TextEditingController noteControl = TextEditingController();
   List<String> category = [];
@@ -183,6 +185,7 @@ class SavePopUpSheetState extends State<SavePopUpSheet> {
                     timeDate: DateTime.now()
                   );                  
                   SpendlogStorage.saveTransaction(transaction);
+                  cache.clearCache();
                   Navigator.pop(context);}
                 else{
                   ScaffoldMessenger.of(context).showSnackBar(

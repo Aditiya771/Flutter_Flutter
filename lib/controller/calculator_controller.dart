@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../popupbutton.dart/savepopupsheet.dart';
+import '../popupbutton.dart/confirmpopup.dart';
 
 List<List<String>> callculateGrid = [
   ['C','SV','⌫','÷'],
@@ -77,11 +78,7 @@ class CalculatorController {
   }
 
   //FUNGSI TOMBOL
-  void onPressedButton(
-    BuildContext context,
-    String value,
-  ){
-
+  void onPressedButton(BuildContext context,String value,) {
     if(value == '='){
       for(int i = 0; i < display.length ; i++){
         String char = display[i];
@@ -172,7 +169,7 @@ class CalculatorController {
             double.parse(secondNum)).toString()
           );}
       }
-    } //END '='
+    } //END OF '='
 
     //SPESIAL TOMBOL
     else if(specialSymbol.contains(value)){
@@ -183,6 +180,27 @@ class CalculatorController {
         if(display.isNotEmpty){
           display =
               display.substring(0, display.length - 1);}
+      }
+
+      else if(value == '//'){
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context){
+              return Dialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              child: Confirmpopup(
+                customTitle: 'Gunakan Kamera',
+
+                customExplanation:
+                  'Fitur ini masih dalam tahap pengembangan oleh developer, harap bersabar karena developer lagi dikeroyok tugas dari dosen \n:)',
+
+                customAction: (){
+                  debugPrint('Kamera dibuka');
+                },
+              ));
+            }
+          );    
+         
       }
 
       else if(value == 'SV'){

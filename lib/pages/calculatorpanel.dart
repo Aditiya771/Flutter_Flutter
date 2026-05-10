@@ -53,10 +53,8 @@ class CalculatorPanelState extends State<CalculatorPanel>{
         Expanded(
           flex: 6,
           child: GridView.builder(
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount:
-                  callculateGrid[0].length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: callculateGrid[0].length,
               crossAxisSpacing: 1,
               mainAxisSpacing: 1
             ),
@@ -85,26 +83,24 @@ class CalculatorPanelState extends State<CalculatorPanel>{
 
                   child: Center(
                     child: value == 'SV'
-
                     ? Icon(
                         Icons.save_alt,
                         size: 30,
-                        color:
-                            controller.getTextColor(
-                              value,
-                            )
+                        color:controller.getTextColor(value)
                       )
 
-                    : Text(
-                        value,
-                        style: TextStyle(
-                          fontSize: 30,
-                          color:
-                              controller.getTextColor(
-                                value,
-                              )
-                        )
-                      )
+                    : value == '//'
+
+                    ? Icon(
+                      Icons.camera_alt,
+                      size: 30,
+                      color:controller.getTextColor(value)
+                    )
+
+                    : Text(value, style: TextStyle(
+                        fontSize: 30,
+                        color: controller.getTextColor(value)
+                      ))
                   ),
                 )
               );

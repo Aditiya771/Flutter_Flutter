@@ -53,12 +53,13 @@ class _HistoryPageState extends State<HistoryPage> {
             controller.date = monthData.keys.toList()..sort();
 
             if (controller.date.isNotEmpty) {
-              controller.selectedDate =
-                  (controller.targetMoving == FromDate.past)
+              controller.selectedDate =(controller.targetMoving == FromDate.past)
                   ? controller.date.first
                   : controller.date.last;
             }
-          } else {
+          }
+          
+          else {
             controller.date = [];
             controller.selectedDate = null;
           }
@@ -66,10 +67,8 @@ class _HistoryPageState extends State<HistoryPage> {
           controller.targetMoving = FromDate.nope;
         }
 
-        final transactionList =
-            List<Map<String, dynamic>>.from(
-          controller.realDataTransaction[
-              controller.selectedMonth]?[controller.selectedDate] ?? [],
+        final transactionList = List<Map<String, dynamic>>.from(
+          controller.realDataTransaction[controller.selectedMonth]?[controller.selectedDate] ?? [],
         );
 
         return Column(
